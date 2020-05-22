@@ -11,7 +11,7 @@ def load_train(train_path, image_size, classes):
     cls = []
 
     print('Reading training images')
-    for fld in classes:   # assuming data directory has a separate folder for each class, and that each folder is named after the class
+    for fld in classes:
         index = classes.index(fld)
         print('Loading {} files (Index: {})'.format(fld, index))
         path = os.path.join(train_path, fld, '*g')
@@ -54,17 +54,10 @@ def load_test(test_path, image_size):
 
   return X_test, X_test_id
 
-
-
 class DataSet(object):
   def __init__(self, images, labels, ids, cls):
     """Construct a DataSet. one_hot arg is used only if fake_data is true."""
     self._num_examples = images.shape[0]
-
-    # Convert shape from [num examples, rows, columns, depth]
-    # to [num examples, rows*columns] (assuming depth == 1)
-    # Convert from [0, 255] -> [0.0, 1.0].
-
     images = images.astype(np.float32)
     images = np.multiply(images, 1.0 / 255.0)
 
@@ -107,14 +100,6 @@ class DataSet(object):
     if self._index_in_epoch > self._num_examples:
       # Finished epoch
       self._epochs_completed += 1
-
-      # # Shuffle the data (maybe)
-      # perm = np.arange(self._num_examples)
-      # np.random.shuffle(perm)
-      # self._images = self._images[perm]
-      # self._labels = self._labels[perm]
-      # Start next epoch
-
       start = 0
       self._index_in_epoch = batch_size
       assert batch_size <= self._num_examples
